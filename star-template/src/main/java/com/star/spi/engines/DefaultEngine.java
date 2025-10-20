@@ -1,17 +1,20 @@
 package com.star.spi.engines;
 
+import com.star.Context;
 import com.star.Engine;
 import com.star.Node;
 import com.star.Resource;
 import com.star.Template;
 import com.star.spi.Loader;
 import com.star.spi.Parser;
+import com.star.spi.Translator;
 import com.star.spi.loaders.ClasspathLoader;
 import com.star.spi.parsers.TemplateParser;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -24,6 +27,8 @@ public class DefaultEngine extends Engine {
     private Loader loader = new ClasspathLoader();
 
     private Parser parser = new TemplateParser();
+
+    private Translator translator;
 
     public static Engine getEngine() {
         return getEngine(null, new Properties());
@@ -41,6 +46,14 @@ public class DefaultEngine extends Engine {
     public Template getTemplate(String name, Locale locale, String encoding) throws IOException, ParseException {
         Resource resource = loader.load(name, locale, encoding);
         Node root = parser.parse(resource.getSource(), 0);
+        return translator.translate(resource, root);
+    }
+
+    public String getName() {
+        return null;
+    }
+
+    public Map<String, Object> createContext(Context parent, Map<String, Object> current) {
         return null;
     }
 }
