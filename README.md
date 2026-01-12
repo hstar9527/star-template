@@ -1,2 +1,2 @@
 # star-template
-轻量级模板引擎，简化指令集，降低模板开发复杂度。
+Lightweight template engine, simplifies instruction set, and reduces template development complexity. The project is designed based on the "microkernel+plugin" architecture
