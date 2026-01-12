@@ -2,16 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>star-template-parent</artifactId>
+        <groupId>com.star</groupId>
+        <version>0.1.0</version>
+    </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.star</groupId>
-    <artifactId>star-template-parent</artifactId>
-    <packaging>pom</packaging>
-    <version>0.1.0</version>
-    <modules>
-        <module>star-template</module>
-        <module>star-template-spring</module>
-    </modules>
+    <artifactId>star-template-spring</artifactId>
 
 
 </project>
