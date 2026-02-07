@@ -1,6 +1,6 @@
 # star-template
 
-Lightweight template engine, simplifies instruction set, and reduces template development complexity. The project is designed based on the "microkernel+plugin" architecture
+a lightweight template engine, simplifies instruction set, and reduces template development complexity. The project is designed based on the "microkernel+plugin" architecture
 
 ## Architecture
 
@@ -8,4 +8,4 @@ Lightweight template engine, simplifies instruction set, and reduces template de
 
 ## License
 
-MIT. Copyright 2018-present hxx.
+Apache-2.0 license. Copyright 2018-present hxx.
