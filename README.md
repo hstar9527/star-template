@@ -1,6 +1,6 @@
 # star-template
 
-a lightweight template engine, simplifies instruction set, and reduces template development complexity. The project is designed based on the "microkernel+plugin" architecture
+A lightweight template engine, simplifies instruction set, and reduces template development complexity. The project is designed based on the "microkernel+plugin" architecture
 
 ## Architecture
 
