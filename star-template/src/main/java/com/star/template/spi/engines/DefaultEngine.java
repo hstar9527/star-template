@@ -10,9 +10,12 @@ import com.star.template.spi.Parser;
 import com.star.template.spi.Translator;
 import com.star.template.spi.loaders.ClasspathLoader;
 import com.star.template.spi.parsers.TemplateParser;
+import com.star.template.spi.translators.CompiledTranslator;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.text.ParseException;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
@@ -28,7 +31,7 @@ public class DefaultEngine extends Engine {
 
     private Parser parser = new TemplateParser();
 
-    private Translator translator;
+    private Translator translator = new CompiledTranslator();
 
     public static Engine getEngine() {
         return getEngine(null, new Properties());
@@ -44,8 +47,11 @@ public class DefaultEngine extends Engine {
     }
 
     public Template getTemplate(String name, Locale locale, String encoding) throws IOException, ParseException {
+        //加载模板文件
         Resource resource = loader.load(name, locale, encoding);
+        //解析成抽象语法树
         Node root = parser.parse(resource.getSource(), 0);
+        //遍历语法树并编译成Java
         return translator.translate(resource, root);
     }
 
@@ -54,6 +60,8 @@ public class DefaultEngine extends Engine {
     }
 
     public Map<String, Object> createContext(Context parent, Map<String, Object> current) {
+
         return null;
     }
+
 }

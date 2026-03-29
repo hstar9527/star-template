@@ -1,12 +1,12 @@
 <!--#set(List<Book> books)-->
 <html>
 <body>
-	<p>HTTL SpringMVC Demo</p>
+	<p>Template Demo</p>
 	<!--#if(books)-->
 	<table>
 		<tr>
 			<td>序号</td>
-			<td>${"book".message}</td>
+			<td>名称</td>
 		</tr>
 		<!--#for(Book book : books)-->
 		<tr>

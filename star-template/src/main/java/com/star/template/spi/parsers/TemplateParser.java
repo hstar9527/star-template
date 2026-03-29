@@ -111,7 +111,7 @@ public class TemplateParser implements Parser {
     private String[] endDirective = new String[]{"end"};
     private String[] importDirective = new String[]{"import"};
 
-    private String[] importPackages = new String[]{"java.util", "com.star.model"};
+    private String[] importPackages = new String[]{"java.util", "com.star.template.model"};
 
     static int getCharType(char ch) {
         switch (ch) {
