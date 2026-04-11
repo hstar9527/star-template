@@ -1,8 +1,7 @@
 
 package com.star.template.spi.loggers;
 
-import httl.spi.Logger;
-import httl.util.Version;
+import com.star.template.spi.Logger;
 
 
 public class MultiLogger implements Logger {
@@ -17,19 +16,19 @@ public class MultiLogger implements Logger {
         if (loggers == null) {
             try {
                 setLoggers(new Logger[]{new Slf4jLogger()});
-                info("Using slf4j logger for httl.");
+                info("Using slf4j logger for star-template.");
             } catch (Throwable e1) {
                 try {
                     setLoggers(new Logger[]{new JclLogger()});
-                    info("Using jcl logger for httl.");
+                    info("Using jcl logger for star-template.");
                 } catch (Throwable e2) {
                     try {
                         setLoggers(new Logger[]{new Log4jLogger()});
-                        info("Using log4j logger for httl.");
+                        info("Using log4j logger for star-template.");
                     } catch (Throwable e3) {
                         try {
                             setLoggers(new Logger[]{new JdkLogger()});
-                            info("Using jdk logger for httl.");
+                            info("Using jdk logger for star-template.");
                         } catch (Throwable e4) {
                             setLoggers(new Logger[]{new SimpleLogger()});
                         }
@@ -44,7 +43,7 @@ public class MultiLogger implements Logger {
     }
 
     private String appendEnvInfo(String msg) {
-        return msg + ", httl: " + Version.getVersion() + ", jvm: " + System.getProperty("java.version")
+        return msg + ", jvm: " + System.getProperty("java.version")
                 + ", os: " + System.getProperty("os.name") + " " + System.getProperty("os.version") + " " + System.getProperty("os.arch");
     }
 
