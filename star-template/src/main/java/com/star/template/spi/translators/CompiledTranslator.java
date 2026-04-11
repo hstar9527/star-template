@@ -27,10 +27,10 @@ public class CompiledTranslator implements Translator {
                 types = new HashMap<String, Class<?>>();
             }
             CompiledVisitor visitor = new CompiledVisitor();
-//            visitor.setResource(resource);
-//            visitor.setNode(root);
+            visitor.setResource(resource);
+            visitor.setNode(root);
 //            visitor.setTypes(types);
-//            visitor.setStream(stream);
+            visitor.setStream(stream);
 //            visitor.setOffset(offset);
 //            visitor.setDefaultFilterVariable(defaultFilterVariable);
 //            visitor.setDefaultFormatterVariable(defaultFormatterVariable);
@@ -56,6 +56,7 @@ public class CompiledTranslator implements Translator {
 //            visitor.setCompiler(compiler);
 //            visitor.init();
             root.accept(visitor);
+            System.out.println("code:" + visitor.getCode());
             return visitor.compile();
         }
     }
@@ -66,7 +67,7 @@ public class CompiledTranslator implements Translator {
     }
 
     public Template translate(Resource resource, Node root) throws ParseException, IOException {
-        Class<?> clazz = parseClass(resource, root, null, true, 0);
+        Class<?> clazz = parseClass(resource, root, null, false, 0);
         return null;
     }
 }

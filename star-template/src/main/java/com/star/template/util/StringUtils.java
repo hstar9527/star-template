@@ -17,6 +17,9 @@ public class StringUtils {
 
     private static final Pattern NUMBER_PATTERN = Pattern.compile("^[+\\-]?[0-9]+(\\.[.0-9]+)?[BSILFDbsilfd]?$");
 
+    /**
+     * 匹配非小括号中的字符
+     */
     private static final Pattern SYMBOL_PATTERN = Pattern.compile("[^(_a-zA-Z0-9)]");
 
     private static final Pattern CLASS_NAME_PATTERN = Pattern.compile("[_a-zA-Z][\\._a-zA-Z0-9]+");
