@@ -1,5 +1,6 @@
 package com.star.template.spi.translators.templates;
 
+import com.star.template.Context;
 import com.star.template.Node;
 import com.star.template.Resource;
 import com.star.template.ast.AstVisitor;
@@ -13,14 +14,26 @@ import com.star.template.ast.Text;
 import com.star.template.ast.UnaryOperator;
 import com.star.template.ast.ValueDirective;
 import com.star.template.ast.Variable;
+import com.star.template.spi.Compiler;
+import com.star.template.spi.compilers.JdkCompiler;
+import com.star.template.util.CharCache;
 import com.star.template.util.StringUtils;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Writer;
 import java.text.ParseException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class CompiledVisitor extends AstVisitor {
-    public Class<?> compile() {
-        return null;
+
+    private StringBuilder builder = new StringBuilder();
+
+    private Compiler compiler = new JdkCompiler();
+
+    public Class<?> compile() throws IOException, ParseException {
+        String code = getCode();
+        return compiler.compile(code);
     }
 
     @Override
@@ -32,7 +45,12 @@ public class CompiledVisitor extends AstVisitor {
 
     @Override
     public void visit(Text node) throws IOException, ParseException {
+        String txt = node.getContent();
         System.out.println("visit(Text node)" + node);
+        String part = getTextPart(txt, false);
+        if (StringUtils.isNotEmpty(part)) {
+            builder.append("	$output.write(" + part + ");\n");
+        }
     }
 
     @Override
@@ -103,8 +121,13 @@ public class CompiledVisitor extends AstVisitor {
      */
     private String[] importPackages = new String[]{"com.star.template.model", "com.star.template", "com.star.template.util", "java.util"};
 
+    private StringBuilder textFields = new StringBuilder();
+
+    private final AtomicInteger seq = new AtomicInteger();
+
     public String getCode() {
         String name = getTemplateClassName(resource, node, stream);
+        String code = builder.toString();
         int i = name.lastIndexOf('.');
         String packageName = i < 0 ? "" : name.substring(0, i);
         String className = i < 0 ? name : name.substring(i + 1);
@@ -117,21 +140,45 @@ public class CompiledVisitor extends AstVisitor {
                 imports.append(".*;\n");
             }
         }
+        String methodCode = code;
         String sorceCode = "package " + packageName + ";\n"
                 + "\n"
                 + imports.toString()
                 + "\n"
-                + className
-                + "\n";
+                + "public final class " + className + " extends " + (stream ? OutputStreamTemplate.class.getName() : WriterTemplate.class.getName()) + " {\n"
+                + "\n"
+                //模板类持有的成员变量
+                + textFields
+                + "\n"
+                + "protected void doRender"
+                + (stream ? "Stream" : "Writer")
+                + "(" + Context.class.getName() + " $context, "
+                + (stream ? OutputStream.class.getName() : Writer.class.getName())
+                + " $output) throws " + Exception.class.getName() + " {\n"
+                + methodCode
+                + "}\n"
+                + "\n"
+                + "}\n";
         return sorceCode;
     }
 
     private String getTemplateClassName(Resource resource, Node node, boolean stream) {
         String name = resource.getName();
-        StringBuilder buf = new StringBuilder(name.length() + 40);
+        StringBuilder buf = new StringBuilder();
         buf.append(name);
         buf.append(stream ? "_stream" : "_writer");
         return TEMPLATE_CLASS_PREFIX + StringUtils.getVaildName(buf.toString());
+    }
+
+    private String getTextPart(String txt, boolean string) {
+        if (StringUtils.isNotEmpty(txt)) {
+            String var = "$TXT" + seq.incrementAndGet();
+            String txtId = CharCache.put(txt.toCharArray());
+            textFields.append("private static final char[] " + var + " = " + CharCache.class.getName() + ".getAndRemove(\"" + txtId + "\");\n");
+            return var;
+        }
+        return "";
+
     }
 
     public void setResource(Resource resource) {

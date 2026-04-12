@@ -1,7 +1,11 @@
 package com.star.template.spi.loggers;
 
 import com.star.template.spi.Logger;
-
+/**
+ * @author star
+ * @version 1.0.0
+ * @description todo 待实现
+ */
 public class JclLogger implements Logger {
     public void trace(String msg) {
 

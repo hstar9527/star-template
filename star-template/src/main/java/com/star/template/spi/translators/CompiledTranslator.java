@@ -6,12 +6,12 @@ import com.star.template.Template;
 import com.star.template.spi.Translator;
 import com.star.template.spi.translators.templates.CompiledTemplate;
 import com.star.template.spi.translators.templates.CompiledVisitor;
+import com.star.template.util.ClassUtils;
 import com.star.template.util.StringUtils;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 public class CompiledTranslator implements Translator {
@@ -63,11 +63,19 @@ public class CompiledTranslator implements Translator {
 
     private String getTemplateClassName(Resource resource, boolean stream) {
         String name = resource.getName();
-        return TEMPLATE_CLASS_PREFIX + name + "_stream";
+        StringBuilder buf = new StringBuilder(name.length() + 40);
+        buf.append(name);
+        buf.append(stream ? "_stream" : "_writer");
+        return TEMPLATE_CLASS_PREFIX + StringUtils.getVaildName(buf.toString());
     }
 
     public Template translate(Resource resource, Node root) throws ParseException, IOException {
         Class<?> clazz = parseClass(resource, root, null, false, 0);
-        return null;
+        try {
+            Template writerTemplate = (Template) clazz.getConstructor().newInstance();
+            return writerTemplate;
+        } catch (Exception e) {
+            throw new ParseException("Failed to translate template: " + resource.getName() + ", cause: " + ClassUtils.toString(e), 0);
+        }
     }
 }

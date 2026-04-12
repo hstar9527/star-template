@@ -13,9 +13,7 @@ import com.star.template.spi.parsers.TemplateParser;
 import com.star.template.spi.translators.CompiledTranslator;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.text.ParseException;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
@@ -39,11 +37,6 @@ public class DefaultEngine extends Engine {
 
     public static Engine getEngine(String configPath, Properties configProperties) {
         return new DefaultEngine();
-    }
-
-    public static void main(String[] args) throws IOException, ParseException {
-        Engine engine = getEngine();
-        Template template = engine.getTemplate("templates/hxxtest.hxx", null, null);
     }
 
     public Template getTemplate(String name, Locale locale, String encoding) throws IOException, ParseException {
