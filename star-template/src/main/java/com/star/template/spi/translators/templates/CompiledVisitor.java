@@ -9,6 +9,7 @@ import com.star.template.ast.Constant;
 import com.star.template.ast.ElseDirective;
 import com.star.template.ast.ForDirective;
 import com.star.template.ast.IfDirective;
+import com.star.template.ast.SetDirective;
 import com.star.template.ast.Statement;
 import com.star.template.ast.Text;
 import com.star.template.ast.UnaryOperator;
@@ -59,6 +60,11 @@ public class CompiledVisitor extends AstVisitor {
     }
 
     @Override
+    public void visit(SetDirective node) throws IOException, ParseException {
+        System.out.println("set");
+    }
+
+    @Override
     public boolean visit(IfDirective node) throws IOException, ParseException {
         System.out.println(" visit(IfDirective node)" + node);
         return true;
@@ -96,6 +102,8 @@ public class CompiledVisitor extends AstVisitor {
     }
 
     public void visit(Variable node) throws IOException, ParseException {
+        String name = node.getName();
+
         System.out.println("visit(Variable node)" + node);
     }
 
