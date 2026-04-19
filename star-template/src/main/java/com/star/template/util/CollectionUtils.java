@@ -1,11 +1,23 @@
 package com.star.template.util;
 
+import com.star.template.util.iterators.BooleanArrayIterator;
+import com.star.template.util.iterators.ByteArrayIterator;
+import com.star.template.util.iterators.CharArrayIterator;
+import com.star.template.util.iterators.DoubleArrayIterator;
+import com.star.template.util.iterators.EmptyIterator;
+import com.star.template.util.iterators.FloatArrayIterator;
+import com.star.template.util.iterators.IntArrayIterator;
+import com.star.template.util.iterators.LongArrayIterator;
+import com.star.template.util.iterators.ObjectArrayIterator;
+import com.star.template.util.iterators.ShortArrayIterator;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -619,87 +631,87 @@ public class CollectionUtils {
         return false;
     }
 
-//    public static Iterator<Boolean> toIterator(boolean[] object) {
-//        return new BooleanArrayIterator(object);
-//    }
-//
-//    public static Iterator<Character> toIterator(char[] object) {
-//        return new CharArrayIterator(object);
-//    }
-//
-//    public static Iterator<Byte> toIterator(byte[] object) {
-//        return new ByteArrayIterator(object);
-//    }
-//
-//    public static Iterator<Short> toIterator(short[] object) {
-//        return new ShortArrayIterator(object);
-//    }
-//
-//    public static Iterator<Integer> toIterator(int[] object) {
-//        return new IntArrayIterator(object);
-//    }
-//
-//    public static Iterator<Long> toIterator(long[] object) {
-//        return new LongArrayIterator(object);
-//    }
-//
-//    public static Iterator<Float> toIterator(float[] object) {
-//        return new FloatArrayIterator(object);
-//    }
-//
-//    public static Iterator<Double> toIterator(double[] object) {
-//        return new DoubleArrayIterator(object);
-//    }
-//
-//    public static <T> Iterator<T> toIterator(T[] object) {
-//        return new ObjectArrayIterator<T>(object);
-//    }
-//
-//    public static <T> Iterator<T> toIterator(Iterator<T> object) {
-//        return object;
-//    }
-//
-//    @SuppressWarnings({"unchecked", "rawtypes"})
-//    public static <K, V> Iterator<Entry<K, V>> toIterator(Map<K, V> object) {
-//        return object == null ? (Iterator) EmptyIterator.getEmptyIterator() : object.entrySet().iterator();
-//    }
-//
-//    @SuppressWarnings("unchecked")
-//    public static <T> Iterator<T> toIterator(Iterable<T> object) {
-//        return object == null ? (Iterator<T>) EmptyIterator.getEmptyIterator() : object.iterator();
-//    }
-//
-//    public static Iterator<?> toIterator(Object object) {
-//        if (object == null) {
-//            return EmptyIterator.getEmptyIterator();
-//        } else if (object instanceof Iterator<?>) {
-//            return ((Iterator<?>) object);
-//        } else if (object instanceof Iterable<?>) {
-//            return ((Iterable<?>) object).iterator();
-//        } else if (object instanceof Map<?, ?>) {
-//            return ((Map<?, ?>) object).entrySet().iterator();
-//        } else if (object instanceof Object[]) {
-//            return new ObjectArrayIterator<Object>((Object[]) object);
-//        } else if (object instanceof int[]) {
-//            return new IntArrayIterator((int[]) object);
-//        } else if (object instanceof long[]) {
-//            return new LongArrayIterator((long[]) object);
-//        } else if (object instanceof float[]) {
-//            return new FloatArrayIterator((float[]) object);
-//        } else if (object instanceof double[]) {
-//            return new DoubleArrayIterator((double[]) object);
-//        } else if (object instanceof short[]) {
-//            return new ShortArrayIterator((short[]) object);
-//        } else if (object instanceof byte[]) {
-//            return new ByteArrayIterator((byte[]) object);
-//        } else if (object instanceof char[]) {
-//            return new CharArrayIterator((char[]) object);
-//        } else if (object instanceof boolean[]) {
-//            return new BooleanArrayIterator((boolean[]) object);
-//        } else {
-//            throw new UnsupportedOperationException("Unsupported foreach type " + object.getClass().getName());
-//        }
-//    }
+    public static Iterator<Boolean> toIterator(boolean[] object) {
+        return new BooleanArrayIterator(object);
+    }
+
+    public static Iterator<Character> toIterator(char[] object) {
+        return new CharArrayIterator(object);
+    }
+
+    public static Iterator<Byte> toIterator(byte[] object) {
+        return new ByteArrayIterator(object);
+    }
+
+    public static Iterator<Short> toIterator(short[] object) {
+        return new ShortArrayIterator(object);
+    }
+
+    public static Iterator<Integer> toIterator(int[] object) {
+        return new IntArrayIterator(object);
+    }
+
+    public static Iterator<Long> toIterator(long[] object) {
+        return new LongArrayIterator(object);
+    }
+
+    public static Iterator<Float> toIterator(float[] object) {
+        return new FloatArrayIterator(object);
+    }
+
+    public static Iterator<Double> toIterator(double[] object) {
+        return new DoubleArrayIterator(object);
+    }
+
+    public static <T> Iterator<T> toIterator(T[] object) {
+        return new ObjectArrayIterator<T>(object);
+    }
+
+    public static <T> Iterator<T> toIterator(Iterator<T> object) {
+        return object;
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public static <K, V> Iterator<Entry<K, V>> toIterator(Map<K, V> object) {
+        return object == null ? (Iterator) EmptyIterator.getEmptyIterator() : object.entrySet().iterator();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> Iterator<T> toIterator(Iterable<T> object) {
+        return object == null ? (Iterator<T>) EmptyIterator.getEmptyIterator() : object.iterator();
+    }
+
+    public static Iterator<?> toIterator(Object object) {
+        if (object == null) {
+            return EmptyIterator.getEmptyIterator();
+        } else if (object instanceof Iterator<?>) {
+            return ((Iterator<?>) object);
+        } else if (object instanceof Iterable<?>) {
+            return ((Iterable<?>) object).iterator();
+        } else if (object instanceof Map<?, ?>) {
+            return ((Map<?, ?>) object).entrySet().iterator();
+        } else if (object instanceof Object[]) {
+            return new ObjectArrayIterator<Object>((Object[]) object);
+        } else if (object instanceof int[]) {
+            return new IntArrayIterator((int[]) object);
+        } else if (object instanceof long[]) {
+            return new LongArrayIterator((long[]) object);
+        } else if (object instanceof float[]) {
+            return new FloatArrayIterator((float[]) object);
+        } else if (object instanceof double[]) {
+            return new DoubleArrayIterator((double[]) object);
+        } else if (object instanceof short[]) {
+            return new ShortArrayIterator((short[]) object);
+        } else if (object instanceof byte[]) {
+            return new ByteArrayIterator((byte[]) object);
+        } else if (object instanceof char[]) {
+            return new CharArrayIterator((char[]) object);
+        } else if (object instanceof boolean[]) {
+            return new BooleanArrayIterator((boolean[]) object);
+        } else {
+            throw new UnsupportedOperationException("Unsupported foreach type " + object.getClass().getName());
+        }
+    }
 
     public static Map<String, Object> toMap(Collection<String> names, Object[] parameters) {
         return toMap(names.toArray(new String[0]), parameters);

@@ -18,12 +18,22 @@ import com.star.template.ast.Variable;
 import com.star.template.spi.Compiler;
 import com.star.template.spi.compilers.JdkCompiler;
 import com.star.template.util.CharCache;
+import com.star.template.util.ClassUtils;
+import com.star.template.util.CollectionUtils;
+import com.star.template.util.LinkedStack;
 import com.star.template.util.StringUtils;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class CompiledVisitor extends AstVisitor {
@@ -31,6 +41,18 @@ public class CompiledVisitor extends AstVisitor {
     private StringBuilder builder = new StringBuilder();
 
     private Compiler compiler = new JdkCompiler();
+
+    private final Map<String, Type> types = new HashMap<String, Type>();
+
+    private final List<String> defVariables = new ArrayList<String>();
+
+    private final List<Class<?>> defVariableTypes = new ArrayList<Class<?>>();
+
+    private final AtomicInteger seq = new AtomicInteger();
+
+    private LinkedStack<Type> typeStack = new LinkedStack<Type>();
+    private LinkedStack<String> codeStack = new LinkedStack<String>();
+    private Map<String, Class<?>> variableTypes = new HashMap<String, Class<?>>();
 
     public Class<?> compile() throws IOException, ParseException {
         String code = getCode();
@@ -47,7 +69,6 @@ public class CompiledVisitor extends AstVisitor {
     @Override
     public void visit(Text node) throws IOException, ParseException {
         String txt = node.getContent();
-        System.out.println("visit(Text node)" + node);
         String part = getTextPart(txt, false);
         if (StringUtils.isNotEmpty(part)) {
             builder.append("	$output.write(" + part + ");\n");
@@ -56,12 +77,19 @@ public class CompiledVisitor extends AstVisitor {
 
     @Override
     public void visit(ValueDirective node) throws IOException, ParseException {
-        System.out.println("visit(ValueDirective node)" + node);
+        builder.append("	$output.write(")
+                .append("book.getTitle()");
+        builder.append(");\n");
     }
 
     @Override
     public void visit(SetDirective node) throws IOException, ParseException {
-        System.out.println("set");
+        Type type = node.getType();
+        Class<?> clazz = (Class<?>) (type instanceof ParameterizedType ? ((ParameterizedType) type).getRawType() : type);
+        //存储set指令设置的变量类型
+        types.put(node.getName(), type);
+        defVariables.add(node.getName());
+        defVariableTypes.add(clazz);
     }
 
     @Override
@@ -88,13 +116,23 @@ public class CompiledVisitor extends AstVisitor {
 
     @Override
     public boolean visit(ForDirective node) throws IOException, ParseException {
-        System.out.println("visit(ForDirective node)" + node);
+        String var = node.getName();
+        Type type = node.getType();
+        Class<?> clazz = (Class<?>) (type instanceof ParameterizedType ? ((ParameterizedType) type).getRawType() : type);
+        String code = popExpressionCode();
+        int i = seq.incrementAndGet();
+        String dataName = "_d_" + i;
+        builder.append("	" + Object.class.getSimpleName() + " " + dataName + " = " + code + ";\n");
+        String name = "_i_" + var;
+        builder.append("	for (" + Iterator.class.getName() + " " + name + " = " + CollectionUtils.class.getName() + ".toIterator(" + dataName + "); " + name + ".hasNext();) {\n");
+        String varCode = name + ".next()";
+        builder.append("	" + clazz.getCanonicalName() + " " + var + " = (" + clazz.getCanonicalName() + ")(" + varCode + ");\n");
         return true;
     }
 
     @Override
     public void end(ForDirective node) throws IOException, ParseException {
-        System.out.println("end(ForDirective node)" + node);
+        builder.append("\n	}\n");
     }
 
     public void visit(Constant node) throws IOException, ParseException {
@@ -103,8 +141,12 @@ public class CompiledVisitor extends AstVisitor {
 
     public void visit(Variable node) throws IOException, ParseException {
         String name = node.getName();
-
-        System.out.println("visit(Variable node)" + node);
+        Type type = types.get(name);
+        Class<?> clazz = (Class<?>) (type instanceof ParameterizedType ? ((ParameterizedType) type).getRawType() : type);
+        String code = ClassUtils.filterJavaKeyword(name);
+        typeStack.push(type);
+        codeStack.push(code);
+        variableTypes.put(name, clazz);
     }
 
     @Override
@@ -131,8 +173,6 @@ public class CompiledVisitor extends AstVisitor {
 
     private StringBuilder textFields = new StringBuilder();
 
-    private final AtomicInteger seq = new AtomicInteger();
-
     public String getCode() {
         String name = getTemplateClassName(resource, node, stream);
         String code = builder.toString();
@@ -148,7 +188,8 @@ public class CompiledVisitor extends AstVisitor {
                 imports.append(".*;\n");
             }
         }
-        String methodCode = code;
+        String declare = "java.util.List books = (java.util.List) $context.get(\"books\");";
+        String methodCode = declare + code;
         String sorceCode = "package " + packageName + ";\n"
                 + "\n"
                 + imports.toString()
@@ -187,6 +228,14 @@ public class CompiledVisitor extends AstVisitor {
         }
         return "";
 
+    }
+
+    private String popExpressionCode() {
+        String code = codeStack.pop();
+        if (!codeStack.isEmpty()) {
+            throw new IllegalStateException("Illegal expression.");
+        }
+        return code;
     }
 
     public void setResource(Resource resource) {

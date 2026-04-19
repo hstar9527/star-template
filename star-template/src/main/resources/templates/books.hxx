@@ -2,7 +2,6 @@
 <html>
 <body>
 	<p>Template Demo</p>
-	<!--#if(books)-->
 	<table>
 		<tr>
 			<td>序号</td>
@@ -15,6 +14,5 @@
 		</tr>
 		<!--#end-->
 	</table>
-	<!--#end-->
 </body>
 </html>

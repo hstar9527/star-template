@@ -73,6 +73,11 @@ public class LinkedStack<T> implements Serializable {
         return result;
     }
 
+    public static void main(String[] args) {
+        Object o = new Object();
+        System.out.println(o.hashCode());
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
